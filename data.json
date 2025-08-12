@@ -1,0 +1,176 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "text": "I typically follow a mental pattern when questioning, even if the interview shifts direction.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 2,
+      "text": "When a candidate hesitates, I often feel the urge to clarify or step in.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 3,
+      "text": "I generally maintain the same tone and approach, regardless of the candidate's demeanor.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 4,
+      "text": "My attention is drawn to responses that align with what I anticipated.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The resume usually sets the boundaries of my questioning.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Once I sense a candidate's potential, I notice I interpret later answers through that lens.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 7,
+      "text": "If an answer lacks clarity, I often weigh whether it's worth exploring further.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 8,
+      "text": "I subconsciously draw on patterns from past interviews to interpret responses.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 9,
+      "text": "I highlight aspects of the job that I believe the candidate will find appealing.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 10,
+      "text": "I feel more in control when I keep the conversation on track rather than letting it flow loosely.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 11,
+      "text": "I sometimes adjust my phrasing mid-interview to match the candidate's communication style.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Interviews that begin smoothly tend to leave a stronger impression on me.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 13,
+      "text": "If an interview feels effortless, I usually assume the candidate is a good fit.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 14,
+      "text": "I might tweak the depth or tone of questions depending on how the candidate responds.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    },
+    {
+      "id": 15,
+      "text": "I usually arrive at a decision about a candidate before all interviews are complete.",
+      "options": [
+        { "text": "Strongly aligns with me", "score": 5 },
+        { "text": "Somewhat aligns with me", "score": 4 },
+        { "text": "Neutral or unsure", "score": 3 },
+        { "text": "Somewhat misaligned with me", "score": 2 },
+        { "text": "Strongly misaligned with me", "score": 1 }
+      ]
+    }
+  ],
+  "responses": {
+    "1-20": "Minimal Self-Awareness: The results suggest minimal awareness of potential interviewing biases and patterns. This may significantly impact the objectivity and effectiveness of your interviews. Strong focus on bias awareness training and structured interviewing techniques is recommended.",
+    "21-40": "Limited Self-Awareness: You may have limited awareness of potential biases and patterns in your interviewing approach. This could impact the consistency and fairness of your evaluations. Consider focusing on developing greater self-reflection and awareness of your interviewing habits.Good Self-Awareness: You show solid awareness of your interviewing patterns and potential biases. This awareness is a valuable asset that likely helps you conduct more balanced and fair interviews while maintaining some consistency in your approach.",
+    "41-60": "Moderate Self-Awareness: You have some awareness of your interviewing tendencies, with room for improvement. Consider developing more conscious awareness of your patterns and biases to enhance your interviewing effectiveness and ensure fair evaluation of all candidates.",
+    "61-80": "Good Self-Awareness: You show solid awareness of your interviewing patterns and potential biases. This awareness is a valuable asset that likely helps you conduct more balanced and fair interviews while maintaining some consistency in your approach.",
+    "81-100": "Strong Self-Awareness: You demonstrate excellent awareness of potential biases and interviewing tendencies. This high level of self-reflection suggests you're likely conducting more objective and effective interviews by actively managing your natural inclinations."
+  }
+}

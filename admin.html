@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Survey Management</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Include the configuration file -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Survey Admin Panel</h1>
+            <nav>
+                <button id="questionsTab" class="tab-btn active">Questions</button>
+                <button id="responsesTab" class="tab-btn">Response Settings</button>
+                <button id="surveyResponsesTab" class="tab-btn">Survey Responses</button>
+            </nav>
+        </header>
+
+        <!-- Questions Management Tab -->
+        <div id="questionsSection" class="tab-content">
+            <div class="section-header">
+                <h2>Question Section</h2>
+                <button id="addQuestionBtn" class="add-btn">Add New Question</button>
+            </div>
+
+            <!-- Add Question Form -->
+            <div id="addQuestionForm" class="form-section hidden">
+                <h3 id="formTitle">Add New Question</h3>
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label for="questionText">Question Text:</label>
+                        <textarea id="questionText" required placeholder="Enter your question here..."></textarea>
+                    </div>
+                    
+                    <div class="options-section">
+                        <h4>Answer Options</h4>
+                        <div id="optionsContainer">
+                            <!-- Options will be generated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="saveQuestionBtn">Save Question</button>
+                        <button type="button" id="cancelQuestion">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Questions List -->
+            <div id="questionsList" class="content-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+
+        <!-- Response Settings Management Tab -->
+        <div id="responsesSection" class="tab-content hidden">
+            <div class="section-header">
+                <h2>Response Settings Section</h2>
+            </div>
+
+            <div id="responsesList" class="content-list">
+                <div class="loading">Loading response settings...</div>
+            </div>
+        </div>
+
+        <!-- Survey Responses Tab -->
+        <div id="surveyResponsesSection" class="tab-content hidden">
+            <div class="section-header">
+                <h2>Survey Responses</h2>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>Total Responses</h3>
+                        <span id="totalResponses">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average Score</h3>
+                        <span id="averageScore">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-controls">
+                    <input type="text" id="searchFilter" placeholder="Search by name, email, or employee ID...">
+                    <select id="scoreFilter">
+                        <option value="">All Score Ranges</option>
+                        <option value="1-20">1-20%</option>
+                        <option value="21-40">21-40%</option>
+                        <option value="41-60">41-60%</option>
+                        <option value="61-80">61-80%</option>
+                        <option value="81-100">81-100%</option>
+                    </select>
+                    <button id="exportResponses" class="export-btn">Export to CSV</button>
+                </div>
+            </div>
+
+            <div id="surveyResponsesList" class="content-list">
+                <div class="loading">Loading survey responses...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin panel data and state
+        let surveyData = {
+            questions: [],
+            responses: {}
+        };
+        let surveyResponses = [];
+        let filteredResponses = [];
+        let editingQuestion = null;
+
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadSurveyData();
+            await loadSurveyResponses();
+            initializeTabs();
+            initializeEventListeners();
+            generateStandardOptionsDisplay();
+            renderQuestions();
+            renderResponses();
+            renderSurveyResponses();
+            updateStats();
+        });
+
+        // Load survey data from server
+        async function loadSurveyData() {
+            try {
+                const response = await fetch(CONFIG.URLS.DATA);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                surveyData = await response.json();
+                console.log('Loaded survey data:', surveyData);
+            } catch (error) {
+                console.error('Error loading survey data:', error);
+                showError('Failed to load survey data. Please check your connection and try again.');
+                // Initialize with empty data if loading fails
+                surveyData = { questions: [], responses: {} };
+            }
+        }
+
+        // Load survey responses from server
+        async function loadSurveyResponses() {
+            try {
+                const response = await fetch(CONFIG.URLS.SURVEY_RESPONSES);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                surveyResponses = await response.json();
+                filteredResponses = [...surveyResponses];
+                console.log('Loaded survey responses:', surveyResponses);
+            } catch (error) {
+                console.error('Error loading survey responses:', error);
+                surveyResponses = [];
+                filteredResponses = [];
+            }
+        }
+
+        // Delete survey response from server
+        async function deleteSurveyResponseFromServer(id) {
+            try {
+                const response = await fetch(CONFIG.URLS.SURVEY_RESPONSE_BY_ID(id), {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Update local data
+                surveyResponses = surveyResponses.filter(r => r.id !== id);
+                filteredResponses = filteredResponses.filter(r => r.id !== id);
+                showSuccess('Survey response deleted successfully!');
+                return true;
+            } catch (error) {
+                console.error('Error deleting survey response:', error);
+                showError('Failed to delete survey response. Please try again.');
+                return false;
+            }
+        }
+
+        // Save individual question
+        async function saveQuestionToServer(question) {
+            try {
+                const url = editingQuestion ? 
+                    CONFIG.URLS.QUESTION_BY_ID(editingQuestion.id) : 
+                    CONFIG.URLS.QUESTIONS;
+                
+                const method = editingQuestion ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(question)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Saved question:', result);
+                
+                // Update local data
+                if (editingQuestion) {
+                    const index = surveyData.questions.findIndex(q => q.id === editingQuestion.id);
+                    if (index !== -1) {
+                        surveyData.questions[index] = result;
+                    }
+                } else {
+                    surveyData.questions.push(result);
+                }
+                
+                showSuccess(editingQuestion ? 'Question updated successfully!' : 'Question added successfully!');
+                return true;
+            } catch (error) {
+                console.error('Error saving question:', error);
+                showError('Failed to save question. Please try again.');
+                return false;
+            }
+        }
+
+        // Delete question from server
+        async function deleteQuestionFromServer(id) {
+            try {
+                const response = await fetch(CONFIG.URLS.QUESTION_BY_ID(id), {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Update local data
+                surveyData.questions = surveyData.questions.filter(q => q.id !== id);
+                showSuccess('Question deleted successfully!');
+                return true;
+            } catch (error) {
+                console.error('Error deleting question:', error);
+                showError('Failed to delete question. Please try again.');
+                return false;
+            }
+        }
+
+        // Delete multiple questions
+        async function deleteQuestionsFromServer(ids) {
+            try {
+                const response = await fetch(CONFIG.URLS.QUESTIONS, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Update local data
+                surveyData.questions = surveyData.questions.filter(q => !ids.includes(q.id));
+                showSuccess('Questions deleted successfully!');
+                return true;
+            } catch (error) {
+                console.error('Error deleting questions:', error);
+                showError('Failed to delete questions. Please try again.');
+                return false;
+            }
+        }
+
+        // Save response to server
+        async function saveResponseToServer(range, responseText) {
+            try {
+                const response = await fetch(CONFIG.URLS.RESPONSES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [range]: responseText })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Update local data
+                surveyData.responses[range] = responseText;
+                showSuccess(`Response for ${range}% range saved successfully!`);
+                return true;
+            } catch (error) {
+                console.error('Error saving response:', error);
+                showError('Failed to save response. Please try again.');
+                return false;
+            }
+        }
+
+        // Initialize tab functionality
+        function initializeTabs() {
+            document.getElementById('questionsTab').addEventListener('click', () => showTab('questions'));
+            document.getElementById('responsesTab').addEventListener('click', () => showTab('responses'));
+            document.getElementById('surveyResponsesTab').addEventListener('click', () => showTab('surveyResponses'));
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(`${tabName}Section`).classList.remove('hidden');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            document.getElementById('addQuestionBtn').addEventListener('click', showAddQuestionForm);
+            document.getElementById('questionForm').addEventListener('submit', saveQuestion);
+            document.getElementById('cancelQuestion').addEventListener('click', hideAddQuestionForm);
+            
+            // Survey responses filters
+            document.getElementById('searchFilter').addEventListener('input', filterResponses);
+            document.getElementById('scoreFilter').addEventListener('change', filterResponses);
+            document.getElementById('exportResponses').addEventListener('click', exportToCSV);
+        }
+
+        // Filter survey responses
+        function filterResponses() {
+            const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+            const scoreRange = document.getElementById('scoreFilter').value;
+            
+            filteredResponses = surveyResponses.filter(response => {
+                const matchesSearch = !searchTerm || 
+                    response.userData.name.toLowerCase().includes(searchTerm) ||
+                    response.userData.email.toLowerCase().includes(searchTerm) ||
+                    response.userData.employeeId.toLowerCase().includes(searchTerm);
+                
+                const matchesScore = !scoreRange || getScoreRange(response.percentage) === scoreRange;
+                
+                return matchesSearch && matchesScore;
+            });
+            
+            renderSurveyResponses();
+        }
+
+        // Get score range for a percentage
+        function getScoreRange(percentage) {
+            if (percentage <= 20) return "1-20";
+            else if (percentage <= 40) return "21-40";
+            else if (percentage <= 60) return "41-60";
+            else if (percentage <= 80) return "61-80";
+            else return "81-100";
+        }
+
+        // Export responses to CSV
+        function exportToCSV() {
+            if (filteredResponses.length === 0) {
+                showError('No responses to export');
+                return;
+            }
+
+            const headers = ['Name', 'Email', 'Employee ID', 'Submission Date', 'Total Score', 'Percentage', 'Score Range'];
+            
+            // Add question headers
+            if (surveyData.questions.length > 0) {
+                surveyData.questions.forEach((q, index) => {
+                    headers.push(`Q${index + 1}: ${q.text.substring(0, 50)}...`);
+                });
+            }
+
+            const csvContent = [
+                headers.join(','),
+                ...filteredResponses.map(response => {
+                    const row = [
+                        `"${response.userData.name}"`,
+                        `"${response.userData.email}"`,
+                        `"${response.userData.employeeId}"`,
+                        `"${response.submittedAt}"`,
+                        response.totalScore,
+                        `${response.percentage}%`,
+                        getScoreRange(response.percentage)
+                    ];
+                    
+                    // Add answers
+                    if (response.answers) {
+                        response.answers.forEach(answer => {
+                            row.push(`"${answer.selectedOptionText}"`);
+                        });
+                    }
+                    
+                    return row.join(',');
+                })
+            ].join('\n');
+
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `survey_responses_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Generate standardized options display
+        function generateStandardOptionsDisplay() {
+            const container = document.getElementById('optionsContainer');
+            const standardOptions = [
+                { text: 'Strongly aligns with me', score: 5 },
+                { text: 'Somewhat aligns with me', score: 4 },
+                { text: 'Neutral or unsure', score: 3 },
+                { text: 'Somewhat misaligned with me', score: 2 },
+                { text: 'Strongly misaligned with me', score: 1 }
+            ];
+
+            container.innerHTML = `
+                <div class="options-info">
+                    <p><strong>Standardized Response Options:</strong></p>
+                    <p>All questions use the same 5-point response scale for consistency:</p>
+                    <div class="standard-options">
+                        <strong>Response Options:</strong>
+                        <div class="option-display">
+                            ${standardOptions.map(option => `
+                                <span class="option-tag">${option.text} (${option.score} pts)</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-style: italic; color: #666;">
+                        These options are automatically applied to all questions to ensure consistent evaluation.
+                    </p>
+                </div>
+            `;
+        }
+
+        function showAddQuestionForm() {
+            document.getElementById('addQuestionForm').classList.remove('hidden');
+            document.getElementById('formTitle').textContent = 'Add New Question';
+            document.getElementById('saveQuestionBtn').textContent = 'Save Question';
+            editingQuestion = null;
+            document.getElementById('questionForm').reset();
+            generateStandardOptionsDisplay();
+            hideMessages();
+        }
+
+        function hideAddQuestionForm() {
+            document.getElementById('addQuestionForm').classList.add('hidden');
+            editingQuestion = null;
+        }
+
+        async function saveQuestion(e) {
+            e.preventDefault();
+            
+            const questionText = document.getElementById('questionText').value.trim();
+            if (!questionText) {
+                showError('Please enter a question text.');
+                return;
+            }
+            
+            // Use standardized options for all questions
+            const standardOptions = [
+                { text: 'Strongly aligns with me', score: 1 },
+                { text: 'Somewhat aligns with me', score: 2 },
+                { text: 'Neutral or unsure', score: 3 },
+                { text: 'Somewhat misaligned with me', score: 4 },
+                { text: 'Strongly misaligned with me', score: 5 }
+            ];
+
+            const question = {
+                text: questionText,
+                options: standardOptions
+            };
+
+            const success = await saveQuestionToServer(question);
+            if (success) {
+                renderQuestions();
+                hideAddQuestionForm();
+            }
+        }
+
+        function editQuestion(id) {
+            const question = surveyData.questions.find(q => q.id === id);
+            if (!question) return;
+
+            editingQuestion = question;
+            document.getElementById('formTitle').textContent = 'Edit Question';
+            document.getElementById('saveQuestionBtn').textContent = 'Update Question';
+            document.getElementById('questionText').value = question.text;
+            
+            // Show the standardized options display
+            generateStandardOptionsDisplay();
+
+            document.getElementById('addQuestionForm').classList.remove('hidden');
+            hideMessages();
+        }
+
+        async function deleteQuestion(id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                const success = await deleteQuestionFromServer(id);
+                if (success) {
+                    renderQuestions();
+                }
+            }
+        }
+
+        async function deleteSurveyResponse(id) {
+            if (confirm('Are you sure you want to delete this survey response?')) {
+                const success = await deleteSurveyResponseFromServer(id);
+                if (success) {
+                    renderSurveyResponses();
+                    updateStats();
+                }
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsList');
+
+            if (surveyData.questions.length === 0) {
+                container.innerHTML = '<p class="empty-state">No questions added yet. Click "Add New Question" to get started.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="bulk-actions">
+                    <button id="deleteSelectedBtn" class="delete-btn hidden" onclick="deleteSelectedQuestions()">Delete Selected</button>
+                </div>
+                ${surveyData.questions.map((question, index) => `
+                    <div class="question-item">
+                        <div class="question-header">
+                            <div style="display: flex; align-items: center;">
+                                <input type="checkbox" class="select-checkbox" data-id="${question.id}" onchange="handleCheckboxChange()">
+                                <h4>Question ${index + 1}</h4>
+                            </div>
+                            <div class="question-actions">
+                                <button onclick="editQuestion(${question.id})" class="edit-btn">Edit</button>
+                                <button onclick="deleteQuestion(${question.id})" class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <p class="question-text">${question.text}</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderResponses() {
+            const container = document.getElementById('responsesList');
+            const ranges = ['1-20', '21-40', '41-60', '61-80', '81-100'];
+            
+            container.innerHTML = ranges.map(range => `
+                <div class="response-item">
+                    <div class="response-header">
+                        <h4>${range}% Score Range</h4>
+                    </div>
+                    <textarea 
+                        id="response${range}" 
+                        class="response-textarea"
+                        placeholder="Enter response for ${range}% score range..."
+                    >${surveyData.responses[range] || ''}</textarea>
+                    <button onclick="saveResponse('${range}')" class="save-btn">Save Response</button>
+                </div>
+            `).join('');
+        }
+
+        function renderSurveyResponses() {
+            const container = document.getElementById('surveyResponsesList');
+
+            if (filteredResponses.length === 0) {
+                container.innerHTML = '<p class="empty-state">No survey responses found.</p>';
+                return;
+            }
+
+            container.innerHTML = filteredResponses.map(response => `
+                <div class="survey-response-card" data-id="${response.id}">
+                    <div class="response-header" role="button" tabindex="0" aria-expanded="false">
+                        <div class="user-info">
+                            <h3>${escapeHtml(response.userData.name)}</h3>
+                            <p>Email: ${escapeHtml(response.userData.email)}</p>
+                            <p>Employee ID: ${escapeHtml(response.userData.employeeId)}</p>
+                            <p>Submitted: ${escapeHtml(response.submittedAt)}</p>
+                        </div>
+                        <div class="score-info">
+                            <div class="score-badge score-${getScoreRange(response.percentage).replace('-', '_')}">
+                                ${response.percentage}%
+                            </div>
+                            <p>Score: ${response.totalScore}/${(response.answers || []).length * 5}</p>
+                            <button onclick="deleteSurveyResponse(${response.id})" class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="answers-section">
+                        <h4>Responses:</h4>
+                        <div class="answers-list">
+                            ${(response.answers || []).map((answer, index) => `
+                                <div class="answer-item">
+                                    <div class="question-text"><strong>Q${index + 1}:</strong> ${escapeHtml(answer.questionText)}</div>
+                                    <div class="answer-text">
+                                        <span class="answer-option">${escapeHtml(answer.selectedOptionText)}</span>
+                                        <span class="answer-score">(${answer.score} pts)</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // attach accordion behavior after DOM is updated
+            addAccordionListeners();
+        }
+
+        // helper to add click + keyboard listeners to response headers
+        function addAccordionListeners() {
+            document.querySelectorAll('.survey-response-card .response-header').forEach(header => {
+                // remove any existing handler to avoid duplicates
+                if (header._accordionHandler) {
+                    header.removeEventListener('click', header._accordionHandler);
+                    header.removeEventListener('keydown', header._accordionKeyHandler);
+                }
+
+                const clickHandler = (e) => {
+                    // don't toggle when clicking the internal delete button or its children
+                    if (e.target.closest('.delete-btn')) return;
+
+                    const card = header.closest('.survey-response-card');
+                    const expanded = card.classList.toggle('expanded');
+                    header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                };
+
+                const keyHandler = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        clickHandler(e);
+                    }
+                };
+
+                // store references so we can remove later if needed
+                header._accordionHandler = clickHandler;
+                header._accordionKeyHandler = keyHandler;
+
+                header.addEventListener('click', clickHandler);
+                header.addEventListener('keydown', keyHandler);
+            });
+        }
+
+        // small HTML-escape helper to avoid injection when using template strings
+        function escapeHtml(str) {
+            if (str === undefined || str === null) return '';
+            return String(str)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+        }
+
+        function updateStats() {
+            const totalElement = document.getElementById('totalResponses');
+            const averageElement = document.getElementById('averageScore');
+            
+            totalElement.textContent = surveyResponses.length;
+            
+            if (surveyResponses.length > 0) {
+                const averagePercentage = surveyResponses.reduce((sum, response) => sum + response.percentage, 0) / surveyResponses.length;
+                averageElement.textContent = `${Math.round(averagePercentage)}%`;
+            } else {
+                averageElement.textContent = '0%';
+            }
+        }
+
+        function handleCheckboxChange() {
+            const checkboxes = document.querySelectorAll('.select-checkbox');
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
+
+            if (anyChecked) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+        }
+
+        async function deleteSelectedQuestions() {
+            const confirmed = confirm("Are you sure you want to delete the selected questions?");
+            if (!confirmed) return;
+
+            const checkboxes = document.querySelectorAll('.select-checkbox');
+            const selectedIds = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => parseInt(cb.dataset.id));
+
+            if (selectedIds.length === 0) return;
+
+            const success = await deleteQuestionsFromServer(selectedIds);
+            if (success) {
+                renderQuestions();
+            }
+        }
+
+        async function saveResponse(range) {
+            const textarea = document.getElementById(`response${range}`);
+            const responseText = textarea.value.trim();
+            
+            await saveResponseToServer(range, responseText);
+        }
+
+        // Utility functions for showing messages
+        function showError(message) {
+            hideMessages();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            const activeSection = document.querySelector('.tab-content:not(.hidden)');
+            activeSection.insertBefore(errorDiv, activeSection.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            const activeSection = document.querySelector('.tab-content:not(.hidden)');
+            activeSection.insertBefore(successDiv, activeSection.firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.querySelectorAll('.error, .success').forEach(msg => msg.remove());
+        }
+    </script>
+</body>
+</html>

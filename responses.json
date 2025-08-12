@@ -1,0 +1,359 @@
+[
+  {
+    "id": 1754908829858,
+    "userData": {
+      "name": "diya",
+      "email": "diyachandra22@gmail.com",
+      "employeeId": "2018"
+    },
+    "answers": [
+      {
+        "questionId": 1,
+        "questionText": "I typically follow a mental pattern when questioning, even if the interview shifts direction.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 2,
+        "questionText": "When a candidate hesitates, I often feel the urge to clarify or step in.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 3,
+        "questionText": "I generally maintain the same tone and approach, regardless of the candidate's demeanor.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 4,
+        "questionText": "My attention is drawn to responses that align with what I anticipated.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 5,
+        "questionText": "The resume usually sets the boundaries of my questioning.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 6,
+        "questionText": "Once I sense a candidate's potential, I notice I interpret later answers through that lens.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 7,
+        "questionText": "If an answer lacks clarity, I often weigh whether it's worth exploring further.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 8,
+        "questionText": "I subconsciously draw on patterns from past interviews to interpret responses.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 9,
+        "questionText": "I highlight aspects of the job that I believe the candidate will find appealing.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 10,
+        "questionText": "I feel more in control when I keep the conversation on track rather than letting it flow loosely.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 11,
+        "questionText": "I sometimes adjust my phrasing mid-interview to match the candidate's communication style.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 12,
+        "questionText": "Interviews that begin smoothly tend to leave a stronger impression on me.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 13,
+        "questionText": "If an interview feels effortless, I usually assume the candidate is a good fit.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 14,
+        "questionText": "I might tweak the depth or tone of questions depending on how the candidate responds.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 15,
+        "questionText": "I usually arrive at a decision about a candidate before all interviews are complete.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      }
+    ],
+    "totalScore": 15,
+    "percentage": 20,
+    "timestamp": "2025-08-11T10:40:29.817Z",
+    "submittedAt": "11/8/2025, 4:10:29 pm"
+  },
+  {
+    "id": 1754909078821,
+    "userData": {
+      "name": "diya",
+      "email": "diyachandra22@gmail.com",
+      "employeeId": "2018"
+    },
+    "answers": [
+      {
+        "questionId": 1,
+        "questionText": "I typically follow a mental pattern when questioning, even if the interview shifts direction.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 2,
+        "questionText": "When a candidate hesitates, I often feel the urge to clarify or step in.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 3,
+        "questionText": "I generally maintain the same tone and approach, regardless of the candidate's demeanor.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 4,
+        "questionText": "My attention is drawn to responses that align with what I anticipated.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 5,
+        "questionText": "The resume usually sets the boundaries of my questioning.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 6,
+        "questionText": "Once I sense a candidate's potential, I notice I interpret later answers through that lens.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 7,
+        "questionText": "If an answer lacks clarity, I often weigh whether it's worth exploring further.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 8,
+        "questionText": "I subconsciously draw on patterns from past interviews to interpret responses.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 9,
+        "questionText": "I highlight aspects of the job that I believe the candidate will find appealing.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 10,
+        "questionText": "I feel more in control when I keep the conversation on track rather than letting it flow loosely.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 11,
+        "questionText": "I sometimes adjust my phrasing mid-interview to match the candidate's communication style.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 12,
+        "questionText": "Interviews that begin smoothly tend to leave a stronger impression on me.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 13,
+        "questionText": "If an interview feels effortless, I usually assume the candidate is a good fit.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 14,
+        "questionText": "I might tweak the depth or tone of questions depending on how the candidate responds.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 15,
+        "questionText": "I usually arrive at a decision about a candidate before all interviews are complete.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      }
+    ],
+    "totalScore": 15,
+    "percentage": 20,
+    "timestamp": "2025-08-11T10:44:38.804Z",
+    "submittedAt": "11/8/2025, 4:14:38 pm"
+  },
+  {
+    "id": 1754909171467,
+    "userData": {
+      "name": "diya",
+      "email": "diyachandra22@gmail.com",
+      "employeeId": "2018"
+    },
+    "answers": [
+      {
+        "questionId": 1,
+        "questionText": "I typically follow a mental pattern when questioning, even if the interview shifts direction.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 2,
+        "questionText": "When a candidate hesitates, I often feel the urge to clarify or step in.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 3,
+        "questionText": "I generally maintain the same tone and approach, regardless of the candidate's demeanor.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 4,
+        "questionText": "My attention is drawn to responses that align with what I anticipated.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 5,
+        "questionText": "The resume usually sets the boundaries of my questioning.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 6,
+        "questionText": "Once I sense a candidate's potential, I notice I interpret later answers through that lens.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 7,
+        "questionText": "If an answer lacks clarity, I often weigh whether it's worth exploring further.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 8,
+        "questionText": "I subconsciously draw on patterns from past interviews to interpret responses.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 9,
+        "questionText": "I highlight aspects of the job that I believe the candidate will find appealing.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 10,
+        "questionText": "I feel more in control when I keep the conversation on track rather than letting it flow loosely.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 11,
+        "questionText": "I sometimes adjust my phrasing mid-interview to match the candidate's communication style.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 12,
+        "questionText": "Interviews that begin smoothly tend to leave a stronger impression on me.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 13,
+        "questionText": "If an interview feels effortless, I usually assume the candidate is a good fit.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 14,
+        "questionText": "I might tweak the depth or tone of questions depending on how the candidate responds.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      },
+      {
+        "questionId": 15,
+        "questionText": "I usually arrive at a decision about a candidate before all interviews are complete.",
+        "selectedOptionIndex": 4,
+        "selectedOptionText": "Strongly misaligned with me",
+        "score": 1
+      }
+    ],
+    "totalScore": 15,
+    "percentage": 20,
+    "timestamp": "2025-08-11T10:46:11.461Z",
+    "submittedAt": "11/8/2025, 4:16:11 pm"
+  }
+]

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Survey</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- Include the configuration file -->
+    <script src="config.js"></script>
+    <style>
+        .hidden { display: none !important; }
+        .form-section { margin: 20px 0; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .navigation { margin: 20px 0; }
+        .nav-btn, .submit-btn, .restart-btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .nav-btn { background: #007bff; color: white; }
+        .submit-btn { background: #28a745; color: white; }
+        .restart-btn { background: #6c757d; color: white; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .question { margin: 20px 0; }
+        .options { margin: 15px 0; }
+        .option { display: block; margin: 10px 0; cursor: pointer; }
+        .option input { margin-right: 10px; }
+        .response-text { margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interview Survey</h1>
+            <h3>Please answer each question honestly and select one of the following options.</h3>
+            <p>There are no right or wrong answers. This tool is meant to help you reflect on your interviewing habits.</p>
+        </header>
+
+        <!-- User Information Form -->
+        <div id="userForm" class="form-section">
+            <h2>Please fill in your details</h2>
+            <div id="userInfoSection">
+                <div class="form-group">
+                    <label for="userName">Name:</label>
+                    <input type="text" id="userName" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email ID:</label>
+                    <input type="email" id="userEmail" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="employeeId">Employee ID:</label>
+                    <input type="text" id="employeeId" autocomplete="off">
+                </div>
+                <button type="button" id="startSurveyBtn">Start Survey</button>
+            </div>
+        </div>
+
+        <!-- Survey Questions -->
+        <div id="surveySection" class="form-section hidden">
+            <h2>Survey Questions</h2>
+            <div id="questionContainer"></div>
+            <div class="navigation">
+                <button id="prevBtn" class="nav-btn" type="button" disabled>Previous</button>
+                <button id="nextBtn" class="nav-btn" type="button">Next</button>
+                <button id="submitBtn" class="submit-btn hidden" type="button">Submit Survey</button>
+            </div>
+            <div id="loadingIndicator" class="hidden" style="text-align: center; margin-top: 20px;">
+                <p>Saving your survey response...</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="form-section hidden">
+            <h2 id="resultsHeading"></h2>
+            <div id="responseText"></div>
+            <button id="restartBtn" class="restart-btn" type="button">Take Survey Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let surveyData = { questions: [], responses: {} };
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let userData = {};
+
+        // Load survey data
+        async function loadSurveyData() {
+            try {
+                const response = await fetch('data.json');
+                if (response.ok) {
+                    surveyData = await response.json();
+                } else {
+                    throw new Error('Failed to load data.json');
+                }
+            } catch {
+                // fallback data
+                surveyData = { questions: [], responses: {} };
+            }
+        }
+
+        // Save response
+        async function saveSurveyResponse(userData, answers, totalScore, percentage) {
+            const detailedAnswers = answers.map((answerIndex, questionIndex) => {
+                if (answerIndex !== null) {
+                    const question = surveyData.questions[questionIndex];
+                    const selectedOption = question.options[answerIndex];
+                    return {
+                        questionId: question.id,
+                        questionText: question.text,
+                        selectedOptionIndex: answerIndex,
+                        selectedOptionText: selectedOption.text,
+                        score: selectedOption.score
+                    };
+                }
+                return null;
+            }).filter(Boolean);
+
+            const responseData = {
+                userData,
+                answers: detailedAnswers,
+                totalScore,
+                percentage,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch(CONFIG.URLS.SURVEY_RESPONSES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(responseData),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    return await response.json();
+                } else {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+            } catch (err) {
+                console.error('Save failed:', err);
+                return { message: 'Response saved locally' };
+            }
+        }
+
+        function validateUserInput() {
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const employeeId = document.getElementById('employeeId').value.trim();
+            
+            if (!name || !email || !employeeId) {
+                alert('Please fill in all fields');
+                return false;
+            }
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return false;
+            }
+            
+            return true;
+        }
+
+        async function startSurvey() {
+            if (!validateUserInput()) return;
+
+            const employeeId = document.getElementById('employeeId').value.trim();
+
+            // Check with backend if already taken
+            try {
+                const checkResponse = await fetch(CONFIG.URLS.SURVEY_RESPONSE_BY_ID(employeeId));
+                const result = await checkResponse.json();
+                if (result.taken) {
+                    alert('You have already taken this survey.');
+                    return;
+                }
+            } catch (err) {
+                console.error('Check failed:', err);
+                // Continue anyway - maybe server is down but we can still take survey
+            }
+
+            // Proceed with survey
+            userData = {
+                name: document.getElementById('userName').value.trim(),
+                email: document.getElementById('userEmail').value.trim(),
+                employeeId
+            };
+
+            document.getElementById('userForm').classList.add('hidden');
+            document.getElementById('surveySection').classList.remove('hidden');
+            userAnswers = new Array(surveyData.questions.length).fill(null);
+            currentQuestion = 0;
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            const question = surveyData.questions[index];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>Question ${index + 1} of ${surveyData.questions.length}</h3>
+                    <p>${question.text}</p>
+                    <div class="options">
+                        ${question.options.map((opt, i) => `
+                            <label class="option">
+                                <input type="radio" name="question${index}" value="${i}" ${userAnswers[index] === i ? 'checked' : ''}>
+                                ${opt.text}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            container.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.onclick = function () {
+                    userAnswers[index] = parseInt(this.value);
+                    updateNavigationButtons();
+                };
+            });
+            
+            currentQuestion = index;
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === surveyData.questions.length - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                submitBtn.disabled = userAnswers[currentQuestion] === null;
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+                nextBtn.disabled = userAnswers[currentQuestion] === null;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < surveyData.questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function showResults(totalScore, maxScore, percentage, responseKey) {
+            document.getElementById('surveySection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('resultsHeading').textContent = `Thank you, ${userData.name}!`;
+            
+            const responseMessage = surveyData.responses[responseKey] || 'Thank you for completing the survey!';
+            document.getElementById('responseText').innerHTML = `
+                <div class="response-text">
+                    ${responseMessage}
+                </div>
+            `;
+        }
+
+        async function submitSurvey() {
+            if (userAnswers.includes(null)) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Calculate score
+                let totalScore = 0;
+                userAnswers.forEach((answerIndex, questionIndex) => {
+                    totalScore += surveyData.questions[questionIndex].options[answerIndex].score;
+                });
+                const maxScore = surveyData.questions.length * 5;
+                const percentage = Math.round((totalScore / maxScore) * 100);
+
+                // Determine response key
+                let responseKey;
+                if (percentage <= 20) responseKey = "1-20";
+                else if (percentage <= 40) responseKey = "21-40";
+                else if (percentage <= 60) responseKey = "41-60";
+                else if (percentage <= 80) responseKey = "61-80";
+                else responseKey = "81-100";
+
+                // Save response to server
+                await saveSurveyResponse(userData, userAnswers, totalScore, percentage);
+
+                // Show results
+                showResults(totalScore, maxScore, percentage, responseKey);
+                
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                alert('There was an error saving your response. Please try again.');
+            } finally {
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                document.getElementById('submitBtn').disabled = false;
+            }
+        }
+
+        function resetSurvey() {
+            // Reset all data
+            userData = {};
+            userAnswers = [];
+            currentQuestion = 0;
+            
+            // Clear form fields
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('employeeId').value = '';
+            
+            // Show initial form
+            document.getElementById('userForm').classList.remove('hidden');
+            document.getElementById('surveySection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Load survey data first
+            await loadSurveyData();
+            
+            // Set up event listeners
+            document.getElementById('startSurveyBtn').onclick = startSurvey;
+            document.getElementById('nextBtn').onclick = nextQuestion;
+            document.getElementById('prevBtn').onclick = prevQuestion;
+            document.getElementById('submitBtn').onclick = submitSurvey;
+            document.getElementById('restartBtn').onclick = resetSurvey;
+            
+            // Add Enter key support for form inputs
+            document.getElementById('employeeId').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startSurvey();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
