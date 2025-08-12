@@ -17,7 +17,15 @@ console.log('📁 Responses file path:', RESPONSES_FILE);
 
 // Enhanced CORS configuration
 app.use(cors({
-    origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000', 'file://','http://192.168.29.223','http://192.168.29.223:80','https://survey-system-gcwn.onrender.com'],
+    origin: [
+        'http://localhost:5500', 
+        'http://127.0.0.1:5500', 
+        'http://localhost:3000', 
+        'file://',
+        'https://survey-system-gcwn.onrender.com',  // Your main domain
+        'http://survey-system-gcwn.onrender.com'    // HTTP fallback if needed
+        // Removed: 'http://192.168.29.223','http://192.168.29.223:80' (local network only)
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type'],
     credentials: true
