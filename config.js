@@ -3,7 +3,7 @@
 
 const CONFIG = {
     // API Base URL - Change this to switch environments
-    API_BASE_URL: 'https://survey-system-gcwn.onrender.com/192.168.29.223',
+    API_BASE_URL: 'https://survey-system-gcwn.onrender.com',
     
     // API Endpoints
     ENDPOINTS: {
@@ -39,3 +39,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 
 }
+
