@@ -37,6 +37,4 @@ window.CONFIG = CONFIG;
 // For environments that support modules (if you decide to use them later)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
-
 }
-

@@ -521,5 +521,4 @@ app.listen(PORT, () => {
     testFiles();
     
     console.log('🔍 Debug mode enabled - all requests will be logged');
-
 });
